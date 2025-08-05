@@ -13,6 +13,18 @@ use App\Models\Proceso;
 
 class TicketController extends Controller
 {
+    public function index()
+    {
+        $tickets = Ticket::with(['importancia', 'proceso', 'anexos'])
+            ->where('user_id', Auth::id())
+            ->orderByDesc('id')
+            ->get();
+
+        return Inertia::render('Usuario/ListadoTickets', [
+            'tickets' => $tickets
+        ]);
+    }
+
     public function create()
     {
         return Inertia::render('Usuario/CrearTicket', [
@@ -22,6 +34,36 @@ class TicketController extends Controller
             'importancias' => Importancia::all(),
         ]);
     }
+
+    public function show(Ticket $ticket)
+    {
+        // Aseguramos que solo el dueño vea su ticket
+        if ($ticket->user_id !== auth()->id()) {
+            dd('NO AUTORIZADO', 'usuario id=>', $ticket->user_id, auth()->id());
+            abort(403);
+        }
+
+        $ticket->load(['proceso', 'importancia', 'anexos', 'respuestas.user']);
+
+        return Inertia::render('Usuario/DetalleTicket', [
+            'ticket' => $ticket,
+        ]);
+    }
+    public function guardarRespuesta(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'descripcion' => 'required|string|max:1000',
+        ]);
+
+        $ticket->respuestas()->create([
+            'user_id' => auth()->id(),
+            'tipo' => 'respuesta_soporte', // o 'solicitud' según el contexto
+            'descripcion' => $validated['descripcion'],
+        ]);
+
+        return back()->with('success', 'Respuesta enviada.');
+    }
+
 
     public function store(Request $request)
     {
@@ -37,7 +79,7 @@ class TicketController extends Controller
             'proceso_id' => $validated['proceso_id'],
             'importancia_id' => $validated['importancia_id'],
             'descripcion' => $validated['descripcion'],
-            'usuario_id' => Auth::id(),
+            'user_id' => Auth::id(),
             'estado' => 'Abierto',
         ]);
 

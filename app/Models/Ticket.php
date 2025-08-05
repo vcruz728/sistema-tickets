@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Anexo;
+
 
 class Ticket extends Model
 {
@@ -10,7 +13,7 @@ class Ticket extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'usuario_id',
+        'user_id',
         'proceso_id',
         'importancia_id',
         'descripcion',
@@ -21,23 +24,35 @@ class Ticket extends Model
     public $timestamps = false;
 
 
-    public function usuario()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'usuario_id');
+        return $this->belongsTo(User::class);
     }
 
     public function proceso()
     {
-        return $this->belongsTo(Proceso::class, 'proceso_id');
+        return $this->belongsTo(Proceso::class);
     }
 
     public function importancia()
     {
-        return $this->belongsTo(Importancia::class, 'importancia_id');
+        return $this->belongsTo(Importancia::class);
     }
 
     public function respuestas()
     {
-        return $this->hasMany(Respuesta::class, 'ticket_id');
+        return $this->hasMany(Respuesta::class);
+    }
+
+    public function anexos(): HasMany
+    {
+        return $this->hasMany(Anexo::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'user_id' => 'integer',
+        ];
     }
 }

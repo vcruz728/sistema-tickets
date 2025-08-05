@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RespuestaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,7 +29,11 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'rol:Usuario'])->group(function () {
     Route::get('/usuario/tickets/crear', [TicketController::class, 'create'])->name('tickets.create');
+    Route::get('/usuario/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/usuario/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/usuario/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
+
     Route::post('/usuario/tickets', [TicketController::class, 'store'])->name('tickets.store');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

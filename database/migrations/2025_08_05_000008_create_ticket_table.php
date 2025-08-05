@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id(); // id
-            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('proceso_id')->constrained('procesos')->onDelete('cascade');
             $table->foreignId('importancia_id')->constrained('importancia');
             $table->text('descripcion');

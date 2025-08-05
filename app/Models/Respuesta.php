@@ -15,14 +15,16 @@ class Respuesta extends Model
         'descripcion',
     ];
 
+    const UPDATED_AT = null;
+
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
-    public function usuario(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function anexos(): HasMany

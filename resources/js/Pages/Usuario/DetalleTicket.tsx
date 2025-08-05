@@ -12,6 +12,7 @@ interface Respuesta {
   id: number;
   descripcion: string;
   tipo: string;
+  created_at: string;
   usuario: {
     name: string;
   };
@@ -32,7 +33,7 @@ interface DetalleTicketProps extends PageProps {
 export default function DetalleTicket({ ticket }: DetalleTicketProps) {
   const { data, setData, post, reset, processing, errors } = useForm({
     descripcion: '',
-    tipo: 'respuesta_soporte', // o 'respuesta_usuario' según tu lógica
+    tipo: 'respuesta_soporte',
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -44,7 +45,7 @@ export default function DetalleTicket({ ticket }: DetalleTicketProps) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow mt-6">
+    <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow mt-6 text-gray-900 dark:text-gray-100">
       <h1 className="text-2xl font-bold mb-6">Detalle del Ticket #{ticket.id}</h1>
 
       <div className="space-y-3">
@@ -61,7 +62,7 @@ export default function DetalleTicket({ ticket }: DetalleTicketProps) {
             {ticket.anexos.map(anexo => (
               <li key={anexo.id}>
                 <a
-                  className="text-blue-600 underline"
+                  className="text-blue-600 dark:text-blue-400 underline"
                   href={`/storage/${anexo.ruta_archivo}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -72,34 +73,33 @@ export default function DetalleTicket({ ticket }: DetalleTicketProps) {
             ))}
           </ul>
         ) : (
-          <p className="text-gray-500">No se adjuntaron archivos.</p>
+          <p className="text-gray-500 dark:text-gray-400">No se adjuntaron archivos.</p>
         )}
       </div>
 
       <div className="mt-8">
         <h2 className="font-semibold text-lg mb-2">Respuestas:</h2>
         {ticket.respuestas.map((respuesta) => (
-          <div key={respuesta.id} className="border p-4 rounded mb-2">
-            <p className="text-sm text-gray-500">
+          <div key={respuesta.id} className="border border-gray-300 dark:border-gray-700 p-4 rounded mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {new Date(respuesta.created_at).toLocaleString('es-MX', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-              })} — {respuesta.tipo === 'respuesta_soporte' ? 'Soporte' : 'Usuario'}: {respuesta.user.name}
+              })}{' '}
+              — {respuesta.tipo === 'respuesta_soporte' ? 'Soporte' : 'Usuario'}: {respuesta.user.name}
             </p>
-            <p>{respuesta.descripcion}</p>
+            <p className="mt-1">{respuesta.descripcion}</p>
           </div>
         ))}
-
       </div>
 
-      {/* Formulario para nueva respuesta */}
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <h3 className="text-lg font-semibold">Agregar una respuesta</h3>
         <textarea
-          className="w-full border p-2 rounded"
+          className="w-full border border-gray-300 dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white"
           rows={4}
           value={data.descripcion}
           onChange={e => setData('descripcion', e.target.value)}
@@ -111,7 +111,11 @@ export default function DetalleTicket({ ticket }: DetalleTicketProps) {
           <p className="text-red-600 text-sm">{errors.descripcion}</p>
         )}
 
-        <button type="submit" disabled={processing} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          disabled={processing}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
           Enviar respuesta
         </button>
       </form>
@@ -119,7 +123,7 @@ export default function DetalleTicket({ ticket }: DetalleTicketProps) {
       <div className="mt-8">
         <Link
           href={route('tickets.index')}
-          className="text-sm text-blue-500 underline"
+          className="text-sm text-blue-500 dark:text-blue-400 underline"
         >
           ← Volver al listado
         </Link>

@@ -1,46 +1,80 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
-import { Home, Ticket, LogOut, User, FilePlus } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Home, Ticket, LogOut, User, FilePlus, Moon, Sun } from 'lucide-react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [darkMode, setDarkMode] = useState(
+        localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    );
+
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [darkMode]);
+
+    const toggleDarkMode = () => {
+        const newMode = !darkMode;
+        setDarkMode(newMode);
+        localStorage.setItem('theme', newMode ? 'dark' : 'light');
+    };
+
+    const navItemStyle = 'flex items-center gap-2 text-sm px-3 py-2 rounded-md transition-colors';
+    const navTextColor = 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700';
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
             {/* Sidebar */}
-            <aside className="hidden sm:block fixed inset-y-0 left-0 w-64 bg-white shadow-md z-20">
+            <aside className="hidden sm:block fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-md z-20">
                 <nav className="mt-4 space-y-1 px-4">
-                    <ResponsiveNavLink  href={route('dashboard')} active={route().current('dashboard')}>
-                        <div className="inline-flex items-center gap-2">
-                            <Home className="w-5 h-5" />
+                    <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                        <div className={`${navItemStyle} ${navTextColor}`}>
+                            <Home className="w-4 h-4" />
                             <span>Inicio</span>
                         </div>
-                    </ResponsiveNavLink >
-                    <ResponsiveNavLink  href={route('tickets.index')} active={route().current('tickets.index')}>
-                        <div className="inline-flex items-center gap-2">
-                            <Ticket className="w-5 h-5" />
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
+                        <div className={`${navItemStyle} ${navTextColor}`}>
+                            <Ticket className="w-4 h-4" />
                             <span>Mis Tickets</span>
                         </div>
-                    </ResponsiveNavLink >
-                    <ResponsiveNavLink  href={route('tickets.create')} active={route().current('tickets.create')}>
-                        <div className="inline-flex items-center gap-2">
-                            <FilePlus className="w-5 h-5" />
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
+                        <div className={`${navItemStyle} ${navTextColor}`}>
+                            <FilePlus className="w-4 h-4" />
                             <span>Nuevo Ticket</span>
                         </div>
-                    </ResponsiveNavLink >
+                    </ResponsiveNavLink>
+
+                    {/* Modo oscuro */}
+                    <div className="mt-6 border-t pt-4">
+                        <button
+                            onClick={toggleDarkMode}
+                            className={`${navItemStyle} ${navTextColor} w-full`}
+                        >
+                            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                            <span>{darkMode ? 'Modo claro' : 'Modo oscuro'}</span>
+                        </button>
+                    </div>
+
+                    {/* Dropdown usuario */}
                     <div className="mt-6 border-t pt-4">
                         <Dropdown>
                             <Dropdown.Trigger>
                                 <span className="inline-flex w-full">
                                     <button
                                         type="button"
-                                        className="flex w-full items-center gap-2 rounded-md bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className={`${navItemStyle} ${navTextColor} w-full bg-transparent`}
                                     >
-                                        <User className="w-4 h-4" /> {user.name}
+                                        <User className="w-4 h-4" />
+                                        {user.name}
                                     </button>
                                 </span>
                             </Dropdown.Trigger>
@@ -63,18 +97,17 @@ export default function AuthenticatedLayout({ header, children }) {
 
             {/* Contenido principal ajustado con padding para evitar traslapar la barra */}
             <div className="flex-1 flex flex-col sm:ml-64">
-                {/* Header */}
-                <header className="bg-white shadow sticky top-0 z-10">
+                <header className="bg-white dark:bg-gray-800 shadow sticky top-0 z-10">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>
                 </header>
 
                 {/* Navegación móvil */}
-                <div className="sm:hidden border-b border-gray-200 px-4 py-2 bg-white">
+                <div className="sm:hidden border-b border-gray-200 dark:border-gray-700 px-4 py-2 bg-white dark:bg-gray-800">
                     <button
-                        onClick={() => setShowingNavigationDropdown((prev) => !prev)}
-                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
+                        onClick={() => setShowingNavigationDropdown(prev => !prev)}
+                        className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-500 focus:outline-none"
                     >
                         <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                             <path
@@ -95,27 +128,40 @@ export default function AuthenticatedLayout({ header, children }) {
                     </button>
 
                     {showingNavigationDropdown && (
-                        <div className="mt-2 space-y-1">
-                            <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                Inicio
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
-                                Mis Tickets
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
-                                Nuevo Ticket
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Perfil
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Cerrar sesión
-                            </ResponsiveNavLink>
-                        </div>
-                    )}
+    <div className="mt-2 space-y-1">
+        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+            Inicio
+        </ResponsiveNavLink>
+        <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
+            Mis Tickets
+        </ResponsiveNavLink>
+        <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
+            Nuevo Ticket
+        </ResponsiveNavLink>
+
+        {/* Botón modo oscuro/claro en móvil */}
+        <button
+            onClick={toggleDarkMode}
+            className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 rounded-md"
+        >
+            <div className="flex items-center gap-2">
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <span>{darkMode ? 'Modo claro' : 'Modo oscuro'}</span>
+            </div>
+        </button>
+
+        <ResponsiveNavLink href={route('profile.edit')}>
+            Perfil
+        </ResponsiveNavLink>
+        <ResponsiveNavLink method="post" href={route('logout')} as="button">
+            Cerrar sesión
+        </ResponsiveNavLink>
+    </div>
+)}
+
                 </div>
 
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-[calc(100vh-4rem)]">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900 min-h-[calc(100vh-4rem)]">
                     {children}
                 </main>
             </div>

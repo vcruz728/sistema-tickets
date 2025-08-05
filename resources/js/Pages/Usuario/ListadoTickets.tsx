@@ -1,78 +1,81 @@
-import { usePage } from '@inertiajs/react'
-import type { PageProps } from '@/types'
-import type { Ticket } from '@/types/ticket'
+import { usePage } from '@inertiajs/react';
+import type { PageProps } from '@/types';
+import type { Ticket } from '@/types/ticket';
 import { Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-
 export default function ListadoTickets() {
-    const { tickets } = usePage<PageProps<{ tickets: Ticket[] }>>().props
+    const { tickets } = usePage<PageProps<{ tickets: Ticket[] }>>().props;
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-2xl font-bold text-gray-800">Mis Ticket</h2>}
+            header={<h2 className="text-2xl font-bold text-gray-800 dark:text-white">Mis Tickets</h2>}
         >
-            <Head title="Mis Ticket" />
-        <div className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-            <h1 className="text-2xl font-bold mb-4">Mis Tickets</h1>
-            {tickets.length === 0 ? (
-                <p>No tienes tickets registrados.</p>
-            ) : (
-                <table className="min-w-full border">
-                    <thead>
-                        <tr className="bg-gray-200 text-left">
-                            <th className="p-2 border">ID</th>
-                            <th className="p-2 border">Proceso</th>
-                            <th className="p-2 border">Importancia</th>
-                            <th className="p-2 border">Estado</th>
-                            <th className="p-2 border">Descripción</th>
-                            <th className="p-2 border">Anexos</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tickets.map(ticket => (
-                            <tr key={ticket.id} className="border-t">
-                                <td className="p-2 border">{ticket.id}</td>
-                                <td className="p-2 border">{ticket.proceso?.nombre_proceso}</td>
-                                <td className="p-2 border">{ticket.importancia?.descripcion}</td>
-                                <td className="p-2 border">{ticket.estado}</td>
-                                <td className="p-2 border">{ticket.descripcion}</td>
-                                <td className="border px-4 py-2">
-                                    {ticket.anexos.length > 0 ? (
-                                        <ul className="list-disc pl-4">
-                                            {ticket.anexos.map((anexo, index) => (
-                                                <li key={index}>
-                                                    <a
-                                                        href={`/storage/${anexo.ruta_archivo}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-blue-600 underline"
-                                                    >
-                                                        {anexo.nombre_archivo ?? 'Ver archivo'}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        'Sin archivos'
-                                    )}
-                                </td>
-                                <td>
-                                    <Link
-                                        href={route('tickets.show', ticket.id)}
-                                        className="text-blue-600 underline text-sm"
-                                    >
-                                        Ver
-                                    </Link>
-                                </td>
+            <Head title="Mis Tickets" />
+
+            <div className="max-w-7xl mx-auto p-6 bg-white dark:bg-gray-800 rounded shadow overflow-x-auto">
+                <h1 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Mis Tickets
+                </h1>
+
+                {tickets.length === 0 ? (
+                    <p className="text-gray-600 dark:text-gray-300">No tienes tickets registrados.</p>
+                ) : (
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                        <thead className="bg-gray-100 dark:bg-gray-700">
+                            <tr>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">ID</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Proceso</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Importancia</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Estado</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Descripción</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Anexos</th>
+                                <th className="p-3 text-left text-gray-800 dark:text-gray-200">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
-       </AuthenticatedLayout>
-    )
+                        </thead>
+                        <tbody className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                            {tickets.map(ticket => (
+                                <tr key={ticket.id} className="border-b border-gray-200 dark:border-gray-700">
+                                    <td className="p-3">{ticket.id}</td>
+                                    <td className="p-3">{ticket.proceso?.nombre_proceso}</td>
+                                    <td className="p-3">{ticket.importancia?.descripcion}</td>
+                                    <td className="p-3">{ticket.estado}</td>
+                                    <td className="p-3">{ticket.descripcion}</td>
+                                    <td className="p-3">
+                                        {ticket.anexos.length > 0 ? (
+                                            <ul className="list-disc list-inside space-y-1">
+                                                {ticket.anexos.map((anexo, index) => (
+                                                    <li key={index}>
+                                                        <a
+                                                            href={`/storage/${anexo.ruta_archivo}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-600 dark:text-blue-400 underline"
+                                                        >
+                                                            {anexo.nombre_archivo ?? 'Ver archivo'}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <span className="italic text-gray-500 dark:text-gray-400">Sin archivos</span>
+                                        )}
+                                    </td>
+                                    <td className="p-3">
+                                        <Link
+                                            href={route('tickets.show', ticket.id)}
+                                            className="text-blue-600 dark:text-blue-400 underline text-sm"
+                                        >
+                                            Ver
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </AuthenticatedLayout>
+    );
 }

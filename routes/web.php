@@ -16,9 +16,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,12 +26,13 @@ Route::middleware('auth')->group(function () {
 
 
 Route::middleware(['auth', 'rol:Usuario'])->group(function () {
-    Route::get('/usuario/tickets/crear', [TicketController::class, 'create'])->name('tickets.create');
-    Route::get('/usuario/tickets', [TicketController::class, 'index'])->name('tickets.index');
-    Route::get('/usuario/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-    Route::post('/usuario/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
-
-    Route::post('/usuario/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/tickets/dashboard', [TicketController::class, 'dashboard'])->name('dashboard');
+    Route::get('/tickets/crear', [TicketController::class, 'create'])->name('tickets.create');
+    Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+   
 });
 
 require __DIR__ . '/auth.php';

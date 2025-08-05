@@ -1,3 +1,5 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react'
 import type { FormEvent } from 'react'
 
@@ -28,6 +30,10 @@ export default function CrearTicket({ procesos, importancias }: any) {
     }
 
     return (
+          <AuthenticatedLayout
+            header={<h2 className="text-2xl font-bold text-gray-800">Crear Ticket</h2>}
+        >
+        <Head title="Crear Ticket" />
         <div className="max-w-2xl mx-auto bg-white p-6 rounded shadow">
             <h1 className="text-2xl font-bold mb-4">Crear Ticket</h1>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -104,5 +110,6 @@ export default function CrearTicket({ procesos, importancias }: any) {
                 </button>
             </form>
         </div>
+        </AuthenticatedLayout>
     )
 }

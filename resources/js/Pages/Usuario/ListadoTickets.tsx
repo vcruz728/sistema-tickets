@@ -2,12 +2,18 @@ import { usePage } from '@inertiajs/react'
 import type { PageProps } from '@/types'
 import type { Ticket } from '@/types/ticket'
 import { Link } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
 
 
 export default function ListadoTickets() {
     const { tickets } = usePage<PageProps<{ tickets: Ticket[] }>>().props
 
     return (
+        <AuthenticatedLayout
+            header={<h2 className="text-2xl font-bold text-gray-800">Mis Ticket</h2>}
+        >
+            <Head title="Mis Ticket" />
         <div className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
             <h1 className="text-2xl font-bold mb-4">Mis Tickets</h1>
             {tickets.length === 0 ? (
@@ -67,5 +73,6 @@ export default function ListadoTickets() {
                 </table>
             )}
         </div>
+       </AuthenticatedLayout>
     )
 }

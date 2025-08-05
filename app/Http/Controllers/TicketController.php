@@ -65,6 +65,16 @@ class TicketController extends Controller
     }
 
 
+         public function dashboard()
+    {
+        $tickets = Ticket::where('user_id', Auth::id())->get();
+
+        return Inertia::render('Dashboard', [
+            'tickets' => $tickets
+        ]);
+    }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([

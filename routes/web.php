@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\{
+    ProfileController,
+    TicketController,
+    Soporte\TicketSoporteController,
+    RespuestaUsuarioController,
+    DirectorController
+};
 use Inertia\Inertia;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\Soporte\TicketSoporteController;
-
 
 Route::get('/', function () {
     return auth()->check()
@@ -14,36 +16,50 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
-
+// 🔐 Perfil de usuario
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
+// 👤 Usuario normal
 Route::middleware(['auth', 'rol:Usuario'])->group(function () {
     Route::get('/tickets/dashboard', [TicketController::class, 'dashboard'])->name('dashboard');
     Route::get('/tickets/crear', [TicketController::class, 'create'])->name('tickets.create');
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/pendientes', [TicketController::class, 'pendientes'])->name('tickets.pendientes');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
     Route::post('/tickets/{ticket}/responder', [TicketController::class, 'responder'])->name('tickets.responder');
     Route::post('/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
-    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-    Route::post('/notifications/marcar-todas', function () {
-    auth()->user()->unreadNotifications->markAsRead();
-    return back();})->name('notifications.readAll');
+    Route::post('/tickets/{ticket}/respuesta-usuario', [RespuestaUsuarioController::class, 'store'])->name('tickets.respuesta_usuario');
 
+    // 🔔 Notificaciones
+    Route::post('/notifications/marcar-todas', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.readAll');
 });
 
-
-
+// 🛠 Soporte
 Route::middleware(['auth', 'rol:Soporte'])->group(function () {
     Route::get('/soporte/tickets', [TicketSoporteController::class, 'index'])->name('soporte.tickets.index');
-    Route::post('/soporte/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('soporte.tickets.responder');
     Route::get('/soporte/tickets/{ticket}', [TicketSoporteController::class, 'detalle'])->name('soporte.tickets.detalle');
-
+    Route::post('/soporte/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('soporte.tickets.responder');
 });
 
+// 📊 Director
+Route::middleware(['auth', 'rol:Director'])->group(function () {
+    Route::get('/director/inicio', [DirectorController::class, 'index'])->name('director.index');
+    
+    // Reporte semanal
+    Route::get('/director/reporte', [DirectorController::class, 'reporteSemanal'])->name('director.reporte');
+    Route::get('/director/reporte/pdf', [DirectorController::class, 'descargarPDF'])->name('director.reporte.pdf');
+
+    // Promedio por proceso
+    Route::get('/director/promedio-respuesta', [DirectorController::class, 'reportePromedioSistemas'])->name('director.promedio');
+    Route::get('/director/reporte-promedio-sistemas/pdf', [DirectorController::class, 'descargarPromedioPDF'])->name('director.reporte.promedio.pdf');
+});
 
 require __DIR__ . '/auth.php';

@@ -53,6 +53,8 @@ class AuthenticatedSessionController extends Controller
                 return redirect('/soporte/tickets');
             case 'Usuario':
                 return redirect('/tickets/dashboard');
+            case 'Director':
+                return redirect('/director/inicio');
             default:
                 return redirect('/');
         }

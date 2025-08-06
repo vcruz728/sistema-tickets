@@ -116,40 +116,54 @@ class TicketController extends Controller
     }
 
     public function responder(Request $request, Ticket $ticket)
-{
-    $request->validate([
-        'comentario' => 'required|string',
-        'archivos.*' => 'nullable|file|max:1024',
-    ]);
+    {
+        $request->validate([
+            'comentario' => 'required|string',
+            'archivos.*' => 'nullable|file|max:1024',
+        ]);
 
-    $respuesta = $ticket->respuestas()->create([
-        'ticket_id'   => $ticket->id,
-        'user_id'     => auth()->id(),
-        'tipo'        => 'respuesta_usuario',
-        'descripcion' => $request->comentario,
-    ]);
+        $respuesta = $ticket->respuestas()->create([
+            'ticket_id'   => $ticket->id,
+            'user_id'     => auth()->id(),
+            'tipo'        => 'respuesta_usuario',
+            'descripcion' => $request->comentario,
+        ]);
 
-    if ($request->hasFile('archivos')) {
-        foreach ($request->file('archivos') as $archivo) {
-            $nombre = $archivo->store('anexos', 'public');
+        if ($request->hasFile('archivos')) {
+            foreach ($request->file('archivos') as $archivo) {
+                $nombre = $archivo->store('anexos', 'public');
 
-            $respuesta->anexos()->create([
-                'ticket_id'      => $ticket->id,
-                'respuesta_id'   => $respuesta->id,
-                'nombre_archivo' => $archivo->getClientOriginalName(),
-                'ruta_archivo'   => $nombre,
-                'mime'           => $archivo->getClientMimeType(),
-                'size'           => $archivo->getSize(),
-            ]);
+                $respuesta->anexos()->create([
+                    'ticket_id'      => $ticket->id,
+                    'respuesta_id'   => $respuesta->id,
+                    'nombre_archivo' => $archivo->getClientOriginalName(),
+                    'ruta_archivo'   => $nombre,
+                    'mime'           => $archivo->getClientMimeType(),
+                    'size'           => $archivo->getSize(),
+                ]);
+            }
         }
+
+        $ticket->update([
+            'estado' => 'Cerrado',
+            'fecha_cierre' => now(),
+        ]);
+
+        return back()->with('success', 'Ticket cerrado correctamente.');
     }
+    public function pendientes()
+    {
+        $user = Auth::user();
 
-    $ticket->update([
-        'estado' => 'Cerrado',
-        'fecha_cierre' => now(),
-    ]);
+        $tickets = $user->tickets()
+            ->where('estado', 'Cerrado')
+            ->whereDoesntHave('respuestasUsuario') // Aún no ha dado su aceptación o rechazo
+            ->with(['proceso', 'importancia', 'anexos']) // relaciones útiles
+            ->latest()
+            ->get();
 
-    return back()->with('success', 'Ticket cerrado correctamente.');
-}
-
+        return Inertia::render('Usuario/TicketsPendientes', [
+            'tickets' => $tickets,
+        ]);
+    }
 }

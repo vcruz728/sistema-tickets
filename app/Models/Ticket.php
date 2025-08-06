@@ -56,4 +56,8 @@ class Ticket extends Model
             'user_id' => 'integer',
         ];
     }
+    public function respuestasUsuario()
+    {
+        return $this->hasMany(\App\Models\RespuestaUsuario::class, 'ticket_id');
+    }
 }

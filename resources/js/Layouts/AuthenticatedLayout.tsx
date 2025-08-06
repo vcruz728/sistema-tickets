@@ -7,9 +7,6 @@ import NotificacionesDropdown from '@/Components/NotificacionesDropdown';
 
 
 
-
-
-
 export default function AuthenticatedLayout({ header, children }) {
 
     const { notifications = [] } = usePage().props;
@@ -51,10 +48,18 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <span>Inicio</span>
                                 </div>
                             </ResponsiveNavLink>
+
+
                             <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
                                 <div className={`${navItemStyle} ${navTextColor}`}>
                                     <Ticket className="w-4 h-4" />
                                     <span>Mis Tickets</span>
+                                </div>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('tickets.pendientes')} active={route().current('tickets.pendientes')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <Ticket className="w-4 h-4" />
+                                    <span>Tickets por aceptar</span>
                                 </div>
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
@@ -73,6 +78,29 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <span>Tickets asignados</span>
                             </div>
                         </ResponsiveNavLink>
+                    )}
+
+                    {user.role?.nombre_rol?.toLowerCase() === 'director' && (
+                        <>
+                            <ResponsiveNavLink href={route('director.index')} active={route().current('director.index')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <Home className="w-4 h-4" />
+                                    <span>Inicio</span>
+                                </div>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('director.reporte')} active={route().current('director.reporte')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <FilePlus className="w-4 h-4" />
+                                    <span>Reporte Tickets por Área</span>
+                                </div>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('director.promedio')} active={route().current('director.promedio')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <FilePlus className="w-4 h-4" />
+                                    <span>Reporte Tiempos de Servicio Sistemas</span>
+                                </div>
+                            </ResponsiveNavLink>
+                        </>
                     )}
 
 
@@ -161,23 +189,65 @@ export default function AuthenticatedLayout({ header, children }) {
                             {user.role?.nombre_rol?.toLowerCase() === 'usuario' && (
                                 <>
                                     <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                        Inicio
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <Home className="w-4 h-4" />
+                                            <span>Inicio</span>
+                                        </div>
                                     </ResponsiveNavLink>
+
+
                                     <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
-                                        Mis Tickets
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <Ticket className="w-4 h-4" />
+                                            <span>Mis Tickets</span>
+                                        </div>
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('tickets.pendientes')} active={route().current('tickets.pendientes')}>
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <Ticket className="w-4 h-4" />
+                                            <span>Tickets por aceptar</span>
+                                        </div>
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
-                                        Nuevo Ticket
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <FilePlus className="w-4 h-4" />
+                                            <span>Nuevo Ticket</span>
+                                        </div>
                                     </ResponsiveNavLink>
                                 </>
                             )}
 
                             {user.role?.nombre_rol?.toLowerCase() === 'soporte' && (
                                 <ResponsiveNavLink href={route('soporte.tickets.index')} active={route().current('soporte.tickets.index')}>
-                                    Tickets asignados
+                                    <div className={`${navItemStyle} ${navTextColor}`}>
+                                        <Ticket className="w-4 h-4" />
+                                        <span>Tickets asignados</span>
+                                    </div>
                                 </ResponsiveNavLink>
                             )}
 
+                            {user.role?.nombre_rol?.toLowerCase() === 'director' && (
+                                <>
+                                    <ResponsiveNavLink href={route('director.index')} active={route().current('director.index')}>
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <Home className="w-4 h-4" />
+                                            <span>Inicio</span>
+                                        </div>
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('director.reporte')} active={route().current('director.reporte')}>
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <FilePlus className="w-4 h-4" />
+                                            <span>Reporte Tickets por Área</span>
+                                        </div>
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('director.promedio')} active={route().current('director.promedio')}>
+                                        <div className={`${navItemStyle} ${navTextColor}`}>
+                                            <FilePlus className="w-4 h-4" />
+                                            <span>Reporte Tiempos de Servicio Sistemas</span>
+                                        </div>
+                                    </ResponsiveNavLink>
+                                </>
+                            )}
                             {/** Común a todos los roles: modo obscuro, perfil, logout */}
                             <button
                                 onClick={toggleDarkMode}

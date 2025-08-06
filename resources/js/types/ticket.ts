@@ -29,4 +29,5 @@ export interface Ticket {
     nombre_proceso: string;
   };
   respuestas?: Respuesta[];
+  anexos?: any[];
 }

@@ -14,13 +14,13 @@ class Area extends Model
     public $timestamps = false;
 
 
-    public function usuarios()
+    public function users()
     {
-        return $this->hasMany(User::class, 'area_id');
+        return $this->hasMany(User::class);
     }
 
     public function procesos()
     {
-        return $this->hasMany(Proceso::class, 'area_id');
+        return $this->hasMany(Proceso::class);
     }
 }

@@ -6,10 +6,12 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 
 class User extends Authenticatable
 {
+    use Notifiable;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     /**
      * The attributes that are mass assignable.
@@ -25,6 +27,7 @@ class User extends Authenticatable
         'proceso_id'
 
     ];
+    use Notifiable;
 
     public $timestamps = false;
 

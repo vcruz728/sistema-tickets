@@ -1,9 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import type { PageProps } from '@/types';
 
-export default function Dashboard({ tickets }) {
+export default function DashboardUsuario({ tickets }: { tickets: any[] }) {
     const [filtro, setFiltro] = useState<'todos' | 'abierto' | 'resuelto'>('todos');
+    const { user } = usePage<PageProps>().props;
 
     const total = tickets.length;
     const pendientes = tickets.filter(ticket => ticket.estado === 'Abierto').length;
@@ -64,11 +66,13 @@ export default function Dashboard({ tickets }) {
                             ticketsFiltrados.map(ticket => (
                                 <a
                                     key={ticket.id}
-                                    href={route('tickets.show', ticket.id)}
+                                href={route('tickets.show', ticket.id)
+
+                                }
                                     className="block"
                                 >
                                     <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg shadow p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200 cursor-pointer">
-                                        <h4 className="font-bold">#{ticket.id} - {ticket.titulo}</h4>
+                                        <h4 className="font-bold">#{ticket.id} - {ticket.titulo ?? 'Ticket'}</h4>
                                         <p>Estado: <span className="font-semibold">{ticket.estado}</span></p>
                                     </div>
                                 </a>

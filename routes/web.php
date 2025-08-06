@@ -27,16 +27,21 @@ Route::middleware(['auth', 'rol:Usuario'])->group(function () {
     Route::get('/tickets/crear', [TicketController::class, 'create'])->name('tickets.create');
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets/{ticket}/responder', [TicketController::class, 'responder'])->name('tickets.responder');
     Route::post('/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    Route::post('/notifications/marcar-todas', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();})->name('notifications.readAll');
+
 });
 
 
 
 Route::middleware(['auth', 'rol:Soporte'])->group(function () {
     Route::get('/soporte/tickets', [TicketSoporteController::class, 'index'])->name('soporte.tickets.index');
-    Route::post('/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('tickets.responder');
-    Route::get('/tickets/{ticket}', [TicketSoporteController::class, 'detalle'])->name('tickets.detalle');
+    Route::post('/soporte/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('soporte.tickets.responder');
+    Route::get('/soporte/tickets/{ticket}', [TicketSoporteController::class, 'detalle'])->name('soporte.tickets.detalle');
 
 });
 

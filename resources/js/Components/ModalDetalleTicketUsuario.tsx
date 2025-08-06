@@ -4,7 +4,6 @@ import ModalRespuestaTicket from './ModalRespuestaTicket';
 import { Inertia } from '@inertiajs/inertia';
 
 
-
 interface Props {
   ticket: Ticket;
   onClose: () => void;
@@ -13,17 +12,7 @@ interface Props {
 const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
-  const handleSubmit = (formData: FormData) => {
-    Inertia.post(`/tickets/${ticket.id}/responder`, formData, {
-      onSuccess: () => {
-        setMostrarFormulario(false);
-        onClose();
-      },
-      onError: (errors) => {
-        console.error('Error al enviar respuesta:', errors);
-      },
-    });
-  };
+
 
   return (
     <>

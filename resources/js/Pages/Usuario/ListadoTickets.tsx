@@ -1,15 +1,30 @@
 import { usePage } from '@inertiajs/react';
 import type { PageProps } from '@/types';
 import type { Ticket } from '@/types/ticket';
-import { Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
+import ModalDetalleTicketUsuario from '@/Components/ModalDetalleTicketUsuario';
 
 export default function ListadoTickets() {
-    const { tickets } = usePage<PageProps<{ tickets: Ticket[] }>>().props;
+    const { tickets, auth } = usePage<PageProps<{ tickets: Ticket[] }>>().props;
+    
+    const [ticketSeleccionado, setTicketSeleccionado] = useState<Ticket | null>(null);
+    const [modalAbierto, setModalAbierto] = useState(false);
+
+    const abrirModal = (ticket: Ticket) => {
+        setTicketSeleccionado(ticket);
+        setModalAbierto(true);
+    };
+
+    const cerrarModal = () => {
+        setTicketSeleccionado(null);
+        setModalAbierto(false);
+    };
 
     return (
         <AuthenticatedLayout
+            user={auth.user}
             header={<h2 className="text-2xl font-bold text-gray-800 dark:text-white">Mis Tickets</h2>}
         >
             <Head title="Mis Tickets" />
@@ -63,12 +78,12 @@ export default function ListadoTickets() {
                                         )}
                                     </td>
                                     <td className="p-3">
-                                        <Link
-                                            href={route('tickets.show', ticket.id)}
+                                        <button
+                                            onClick={() => abrirModal(ticket)}
                                             className="text-blue-600 dark:text-blue-400 underline text-sm"
                                         >
                                             Ver
-                                        </Link>
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -76,6 +91,13 @@ export default function ListadoTickets() {
                     </table>
                 )}
             </div>
+
+            {modalAbierto && ticketSeleccionado && (
+                <ModalDetalleTicketUsuario
+                    ticket={ticketSeleccionado}
+                    onClose={cerrarModal}
+                />
+            )}
         </AuthenticatedLayout>
     );
 }

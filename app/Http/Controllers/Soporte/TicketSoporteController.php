@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use App\Notifications\TicketCerrado;
+use Illuminate\Support\Facades\Log;
+
 
 class TicketSoporteController extends Controller
 {
@@ -78,8 +81,20 @@ class TicketSoporteController extends Controller
             'fecha_cierre' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Ticket cerrado correctamente.');
-    }
+                // ENVIAR NOTIFICACION AL USUARIO
+            // 2. Verificar que tenga relación con usuario
+            if ($ticket->user) {
+                Log::info("Notificando al usuario {$ticket->user->id} sobre cierre del ticket {$ticket->id}");
+
+                // 3. Enviar notificación
+                $ticket->user->notify(new TicketCerrado($ticket));
+            } else {
+                Log::warning("El ticket {$ticket->id} no tiene usuario relacionado");
+            }
+
+            return back()->with('success', 'Ticket cerrado y usuario notificado.');
+        }
+            
 
     public function detalle(Ticket $ticket)
     {

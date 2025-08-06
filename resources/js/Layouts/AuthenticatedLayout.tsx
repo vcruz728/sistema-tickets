@@ -3,8 +3,17 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { Home, Ticket, LogOut, User, FilePlus, Moon, Sun } from 'lucide-react';
+import NotificacionesDropdown from '@/Components/NotificacionesDropdown';
+
+
+
+
+
 
 export default function AuthenticatedLayout({ header, children }) {
+
+    const { notifications = [] } = usePage().props;
+    const notificacionesSinLeer = notifications.length;
     const user = usePage().props.auth.user;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const [darkMode, setDarkMode] = useState(
@@ -112,10 +121,16 @@ export default function AuthenticatedLayout({ header, children }) {
             {/* Contenido principal ajustado con padding para evitar traslapar la barra */}
             <div className="flex-1 flex flex-col sm:ml-64">
                 <header className="bg-white dark:bg-gray-800 shadow sticky top-0 z-10">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
                         {header}
+
+                        {/* Notificaciones */}
+                        <div className="relative">
+                            <NotificacionesDropdown />
+                        </div>
                     </div>
                 </header>
+
 
                 {/* Navegación móvil */}
                 <div className="sm:hidden border-b border-gray-200 dark:border-gray-700 px-4 py-2 bg-white dark:bg-gray-800">
@@ -140,48 +155,48 @@ export default function AuthenticatedLayout({ header, children }) {
                             />
                         </svg>
                     </button>
-{showingNavigationDropdown && (
-    <div className="mt-2 space-y-1">
-        {/* Navegación por rol */}
-        {user.role?.nombre_rol?.toLowerCase() === 'usuario' && (
-            <>
-                <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                    Inicio
-                </ResponsiveNavLink>
-                <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
-                    Mis Tickets
-                </ResponsiveNavLink>
-                <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
-                    Nuevo Ticket
-                </ResponsiveNavLink>
-            </>
-        )}
+                    {showingNavigationDropdown && (
+                        <div className="mt-2 space-y-1">
+                            {/* Navegación por rol */}
+                            {user.role?.nombre_rol?.toLowerCase() === 'usuario' && (
+                                <>
+                                    <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                        Inicio
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
+                                        Mis Tickets
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
+                                        Nuevo Ticket
+                                    </ResponsiveNavLink>
+                                </>
+                            )}
 
-        {user.role?.nombre_rol?.toLowerCase() === 'soporte' && (
-            <ResponsiveNavLink href={route('soporte.tickets.index')} active={route().current('soporte.tickets.index')}>
-                Tickets asignados
-            </ResponsiveNavLink>
-        )}
+                            {user.role?.nombre_rol?.toLowerCase() === 'soporte' && (
+                                <ResponsiveNavLink href={route('soporte.tickets.index')} active={route().current('soporte.tickets.index')}>
+                                    Tickets asignados
+                                </ResponsiveNavLink>
+                            )}
 
-        {/** Común a todos los roles: modo obscuro, perfil, logout */}
-        <button
-            onClick={toggleDarkMode}
-            className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 rounded-md"
-        >
-            <div className="flex items-center gap-2">
-                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                <span>{darkMode ? 'Modo claro' : 'Modo obscuro'}</span>
-            </div>
-        </button>
+                            {/** Común a todos los roles: modo obscuro, perfil, logout */}
+                            <button
+                                onClick={toggleDarkMode}
+                                className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 rounded-md"
+                            >
+                                <div className="flex items-center gap-2">
+                                    {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                                    <span>{darkMode ? 'Modo claro' : 'Modo obscuro'}</span>
+                                </div>
+                            </button>
 
-        <ResponsiveNavLink href={route('profile.edit')}>
-            Perfil
-        </ResponsiveNavLink>
-        <ResponsiveNavLink method="post" href={route('logout')} as="button">
-            Cerrar sesión
-        </ResponsiveNavLink>
-    </div>
-)}
+                            <ResponsiveNavLink href={route('profile.edit')}>
+                                Perfil
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
+                                Cerrar sesión
+                            </ResponsiveNavLink>
+                        </div>
+                    )}
 
                 </div>
 

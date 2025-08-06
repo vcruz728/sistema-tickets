@@ -12,8 +12,19 @@ class RolMiddleware
     {
         $usuario = $request->user();
 
-        if ($usuario && in_array($usuario->role->nombre_rol, $roles)) {
-            return $next($request);
+        if ($usuario) {
+            // Asegura que la relación 'role' esté cargada
+            $usuario->loadMissing('role');
+
+            logger()->info('ROL Middleware', [
+                'usuario_id' => $usuario->id,
+                'nombre_rol' => $usuario->role?->nombre_rol,
+                'esperado' => $roles,
+            ]);
+
+            if (in_array($usuario->role?->nombre_rol, $roles)) {
+                return $next($request);
+            }
         }
 
         abort(403, 'No tienes permiso para acceder a esta ruta.');

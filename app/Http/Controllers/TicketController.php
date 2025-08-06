@@ -39,7 +39,11 @@ class TicketController extends Controller
     {
         // Aseguramos que solo el dueño vea su ticket
         if ($ticket->user_id !== auth()->id()) {
-            dd('NO AUTORIZADO', 'usuario id=>', $ticket->user_id, auth()->id());
+            \Log::info('Acceso denegado al ticket', [
+                'ticket_id' => $ticket->id,
+                'propietario' => $ticket->user_id,
+                'usuario_actual' => auth()->id(),
+            ]);
             abort(403);
         }
 
@@ -65,11 +69,11 @@ class TicketController extends Controller
     }
 
 
-         public function dashboard()
+    public function dashboard()
     {
         $tickets = Ticket::where('user_id', Auth::id())->get();
 
-        return Inertia::render('Dashboard', [
+        return Inertia::render('DashboardUsuario', [
             'tickets' => $tickets
         ]);
     }
@@ -110,4 +114,42 @@ class TicketController extends Controller
 
         return redirect()->route('tickets.create')->with('success', 'Ticket creado correctamente.');
     }
+
+    public function responder(Request $request, Ticket $ticket)
+{
+    $request->validate([
+        'comentario' => 'required|string',
+        'archivos.*' => 'nullable|file|max:1024',
+    ]);
+
+    $respuesta = $ticket->respuestas()->create([
+        'ticket_id'   => $ticket->id,
+        'user_id'     => auth()->id(),
+        'tipo'        => 'respuesta_usuario',
+        'descripcion' => $request->comentario,
+    ]);
+
+    if ($request->hasFile('archivos')) {
+        foreach ($request->file('archivos') as $archivo) {
+            $nombre = $archivo->store('anexos', 'public');
+
+            $respuesta->anexos()->create([
+                'ticket_id'      => $ticket->id,
+                'respuesta_id'   => $respuesta->id,
+                'nombre_archivo' => $archivo->getClientOriginalName(),
+                'ruta_archivo'   => $nombre,
+                'mime'           => $archivo->getClientMimeType(),
+                'size'           => $archivo->getSize(),
+            ]);
+        }
+    }
+
+    $ticket->update([
+        'estado' => 'Cerrado',
+        'fecha_cierre' => now(),
+    ]);
+
+    return back()->with('success', 'Ticket cerrado correctamente.');
+}
+
 }

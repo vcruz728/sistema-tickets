@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TarjetaSemaforo from '@/Components/TarjetaSemaforo';
-import TicketCard from '@/Components/TicketCard';
-import ModalDetalleTicket from '@/Components/ModalDetalleTicket';
-import Pagination from '@/Components/Pagination';
+import TicketCardSoporte from '@/Components/TicketCardSoporte';
+import ModalDetalleTicket from '@/Components/ModalDetalleTicketSoporte';
 import type { PageProps } from '@/types';
 import type { Ticket } from '@/types/ticket';
 
@@ -18,7 +17,7 @@ export default function ListadoTicketsSoporte() {
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
     const [ticketSeleccionado, setTicketSeleccionado] = useState<Ticket | null>(null);
     const [paginaActual, setPaginaActual] = useState(1);
-    const porPagina = 5;
+    const porPagina = 10;
 
     const calcularCategoria = (ticket: Ticket): string => {
         const apertura = new Date(ticket.fecha_apertura);
@@ -79,7 +78,7 @@ export default function ListadoTicketsSoporte() {
                 {categoriaSeleccionada && (
                     <div className="space-y-2">
                         {ticketsPagina.map(ticket => (
-                            <TicketCard
+                            <TicketCardSoporte
                                 key={ticket.id}
                                 ticket={ticket}
                                 onClick={setTicketSeleccionado}

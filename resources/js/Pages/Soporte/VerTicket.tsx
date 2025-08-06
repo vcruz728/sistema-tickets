@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import ModalDetalleTicket from '@/Components/ModalDetalleTicket';
+import ModalDetalleTicket from '@/Components/ModalDetalleTicketSoporte';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import type { PageProps } from '@/types';

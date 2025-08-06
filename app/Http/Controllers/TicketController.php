@@ -69,14 +69,30 @@ class TicketController extends Controller
     }
 
 
-    public function dashboard()
-    {
-        $tickets = Ticket::where('user_id', Auth::id())->get();
+public function dashboard(Request $request)
+{
+    $estado = $request->input('estado');
 
-        return Inertia::render('DashboardUsuario', [
-            'tickets' => $tickets
-        ]);
+    $query = Ticket::with(['proceso', 'importancia', 'anexos', 'respuestas.user'])
+        ->where('user_id', auth()->id());
+
+    if ($estado === 'abierto') {
+        $query->where('estado', 'Abierto');
+    } elseif ($estado === 'resuelto') {
+        $query->where('estado', '!=', 'Abierto');
     }
+
+    $tickets = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
+    $todos = Ticket::where('user_id', auth()->id())->get();
+
+    return Inertia::render('Usuario/DashboardUsuario', [
+        'tickets' => $tickets,
+        'todos_tickets' => $todos,
+        'filtro_actual' => $estado ?? 'todos',
+    ]);
+}
+
 
 
     public function store(Request $request)

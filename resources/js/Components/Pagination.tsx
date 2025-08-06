@@ -1,46 +1,39 @@
-import React from 'react';
 import { router } from '@inertiajs/react';
 
-interface PaginationLink {
+interface Link {
   url: string | null;
   label: string;
   active: boolean;
 }
 
 interface Props {
-  links: PaginationLink[];
-  onPageChange: (url: string) => void;
+  links: Link[];
 }
 
-const Pagination: React.FC<Props> = ({ links, onPageChange }) => {
-  return (
-    <div className="mt-6 flex justify-center space-x-1">
-      {links.map((link, index) => {
-        const isDisabled = link.url === null;
-        const isActive = link.active;
+export default function Pagination({ links }: Props) {
+  if (!links || links.length <= 1) return null;
 
-        // Limpia etiquetas HTML del label (como "&laquo;" o "&raquo;")
-        const labelText = link.label
-          .replace(/&laquo;/g, '«')
-          .replace(/&raquo;/g, '»')
-          .replace(/<\/?[^>]+(>|$)/g, '');
+  return (
+    <div className="flex justify-center mt-6 gap-1 flex-wrap">
+      {links.map((link, index) => {
+        const label = link.label
+          .replace('&laquo;', '«')
+          .replace('&raquo;', '»');
 
         return (
           <button
             key={index}
-            disabled={isDisabled}
-            onClick={() => link.url && onPageChange(link.url)}
-            className={`px-3 py-1 rounded text-sm border 
-              ${isActive ? 'bg-blue-600 text-white font-bold' : 'bg-white text-gray-700'}
-              ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}
-            `}
-          >
-            {labelText}
-          </button>
+            dangerouslySetInnerHTML={{ __html: label }}
+            disabled={!link.url}
+            onClick={() => link.url && router.visit(link.url)}
+            className={`px-3 py-1 border rounded ${
+              link.active
+                ? 'bg-blue-500 text-white border-blue-500'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+            } ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+          />
         );
       })}
     </div>
   );
-};
-
-export default Pagination;
+}

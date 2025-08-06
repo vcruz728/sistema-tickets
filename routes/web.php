@@ -35,7 +35,9 @@ Route::middleware(['auth', 'rol:Usuario'])->group(function () {
 
 Route::middleware(['auth', 'rol:Soporte'])->group(function () {
     Route::get('/soporte/tickets', [TicketSoporteController::class, 'index'])->name('soporte.tickets.index');
-    // Aquí puedes agregar más rutas de soporte si lo necesitas
+    Route::post('/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('tickets.responder');
+    Route::get('/tickets/{ticket}', [TicketSoporteController::class, 'detalle'])->name('tickets.detalle');
+
 });
 
 

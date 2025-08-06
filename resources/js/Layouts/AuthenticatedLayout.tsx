@@ -67,14 +67,14 @@ export default function AuthenticatedLayout({ header, children }) {
                     )}
 
 
-                    {/* Modo oscuro */}
+                    {/* Modo obscuro */}
                     <div className="mt-6 border-t pt-4">
                         <button
                             onClick={toggleDarkMode}
                             className={`${navItemStyle} ${navTextColor} w-full`}
                         >
                             {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                            <span>{darkMode ? 'Modo claro' : 'Modo oscuro'}</span>
+                            <span>{darkMode ? 'Modo claro' : 'Modo obscuro'}</span>
                         </button>
                     </div>
 
@@ -163,14 +163,14 @@ export default function AuthenticatedLayout({ header, children }) {
             </ResponsiveNavLink>
         )}
 
-        {/** Común a todos los roles: modo oscuro, perfil, logout */}
+        {/** Común a todos los roles: modo obscuro, perfil, logout */}
         <button
             onClick={toggleDarkMode}
             className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
             <div className="flex items-center gap-2">
                 {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                <span>{darkMode ? 'Modo claro' : 'Modo oscuro'}</span>
+                <span>{darkMode ? 'Modo claro' : 'Modo obscuro'}</span>
             </div>
         </button>
 

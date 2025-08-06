@@ -1,33 +1,40 @@
+export interface Proceso {
+  id: number;
+  nombre_proceso: string;
+}
+
+export interface Importancia {
+  id: number;
+  descripcion: string; 
+}
+
 export interface Anexo {
   id: number;
   nombre_archivo: string;
   ruta_archivo: string;
-  mime: string;
-  size: number;
 }
 
 export interface Respuesta {
   id: number;
   descripcion: string;
   created_at: string;
-  user?: {
+  user: {
     name: string;
   };
-  anexos?: Anexo[];
+  anexos: Anexo[];
 }
 
 export interface Ticket {
   id: number;
-  estado: string;
+  user_id: number;
+  proceso_id: number;
+  importancia_id: number;
   descripcion: string;
+  estado: string;
   fecha_apertura: string;
   fecha_cierre?: string;
-  importancia?: {
-    nombre_importancia: string;
-  };
-  proceso?: {
-    nombre_proceso: string;
-  };
-  respuestas?: Respuesta[];
-  anexos?: any[];
+  proceso: Proceso;
+  importancia: Importancia;
+  anexos: Anexo[];
+  respuestas: Respuesta[];
 }

@@ -9,7 +9,7 @@ interface Props {
   onClose: () => void;
 }
 
-const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
+const ModalDetalleTicketUsuario: React.FC<Props> = ({ ticket, onClose }) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
 
@@ -29,7 +29,7 @@ const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
 
           <div className="space-y-2 text-sm">
             <p><strong>Estado:</strong> {ticket.estado}</p>
-            <p><strong>Importancia:</strong> {ticket.importancia?.nombre_importancia}</p>
+            <p><strong>Importancia:</strong> {ticket.importancia?.descripcion}</p>
             <p><strong>Proceso:</strong> {ticket.proceso?.nombre_proceso}</p>
             <p><strong>Fecha apertura:</strong> {ticket.fecha_apertura}</p>
             {ticket.fecha_cierre && (
@@ -79,4 +79,4 @@ const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
   );
 };
 
-export default ModalDetalleTicket;
+export default ModalDetalleTicketUsuario;

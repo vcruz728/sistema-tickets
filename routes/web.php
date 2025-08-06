@@ -6,9 +6,20 @@ use App\Http\Controllers\{
     TicketController,
     Soporte\TicketSoporteController,
     RespuestaUsuarioController,
-    DirectorController
+    DirectorController,
+
+
 };
-use Inertia\Inertia;
+use App\Models\Anexo;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\AnexoController;
+
+
+
+Route::get('/anexos/descargar/{anexo}', [AnexoController::class, 'download'])
+     ->middleware('auth')
+     ->name('anexos.descargar');
 
 Route::get('/', function () {
     return auth()->check()
@@ -45,14 +56,14 @@ Route::middleware(['auth', 'rol:Usuario'])->group(function () {
 // 🛠 Soporte
 Route::middleware(['auth', 'rol:Soporte'])->group(function () {
     Route::get('/soporte/tickets', [TicketSoporteController::class, 'index'])->name('soporte.tickets.index');
-    Route::get('/soporte/tickets/{ticket}', [TicketSoporteController::class, 'detalle'])->name('soporte.tickets.detalle');
+    Route::get('/soporte/tickets/{ticket}/detalle', [TicketSoporteController::class, 'detalle'])->name('soporte.tickets.detalle');
     Route::post('/soporte/tickets/{ticket}/responder', [TicketSoporteController::class, 'responder'])->name('soporte.tickets.responder');
 });
 
 // 📊 Director
 Route::middleware(['auth', 'rol:Director'])->group(function () {
     Route::get('/director/inicio', [DirectorController::class, 'index'])->name('director.index');
-    
+
     // Reporte semanal
     Route::get('/director/reporte', [DirectorController::class, 'reporteSemanal'])->name('director.reporte');
     Route::get('/director/reporte/pdf', [DirectorController::class, 'descargarPDF'])->name('director.reporte.pdf');

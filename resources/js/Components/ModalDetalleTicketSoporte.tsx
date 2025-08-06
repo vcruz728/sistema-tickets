@@ -9,7 +9,7 @@ interface Props {
   onClose: () => void;
 }
 
-const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
+const ModalDetalleTicketSoporte: React.FC<Props> = ({ ticket, onClose }) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const handleSubmit = (formData: FormData) => {
@@ -18,8 +18,8 @@ const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
         setMostrarFormulario(false);
         onClose();
       },
-        preserveState: true,
-        preserveScroll: true,
+      preserveState: true,
+      preserveScroll: true,
       onError: (errors) => {
         console.error('Error al enviar respuesta:', errors);
       },
@@ -41,14 +41,36 @@ const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
 
           <div className="space-y-2 text-sm">
             <p><strong>Estado:</strong> {ticket.estado}</p>
-            <p><strong>Importancia:</strong> {ticket.importancia?.nombre_importancia}</p>
-            <p><strong>Proceso:</strong> {ticket.proceso?.nombre_proceso}</p>
+            <p><strong>Importancia:</strong> {ticket.importancia ? ticket.importancia.descripcion : 'Sin importancia'}</p>
+            <p><strong>Proceso:</strong> {ticket.proceso ? ticket.proceso.nombre_proceso : 'Sin proceso'}</p>
+
             <p><strong>Fecha apertura:</strong> {ticket.fecha_apertura}</p>
             {ticket.fecha_cierre && (
               <p><strong>Fecha cierre:</strong> {ticket.fecha_cierre}</p>
             )}
             <p><strong>Descripción:</strong></p>
             <p className="bg-gray-100 dark:bg-gray-700 p-3 rounded">{ticket.descripcion}</p>
+
+            {ticket.anexos && ticket.anexos.length > 0 && (
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2">Archivos adjuntos</h3>
+                <ul className="space-y-1 text-sm list-disc list-inside">
+                  {ticket.anexos.map((anexo: any) => (
+                    <li key={anexo.id}>
+                      <a
+                        href={`http://localhost:8000/anexos/descargar/${anexo.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800"
+                      >
+                        {anexo.nombre_archivo}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
           </div>
 
           {ticket.respuestas && ticket.respuestas.length > 0 && (
@@ -91,4 +113,4 @@ const ModalDetalleTicket: React.FC<Props> = ({ ticket, onClose }) => {
   );
 };
 
-export default ModalDetalleTicket;
+export default ModalDetalleTicketSoporte;

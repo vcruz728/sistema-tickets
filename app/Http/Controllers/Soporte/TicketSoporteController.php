@@ -21,15 +21,17 @@ class TicketSoporteController extends Controller
             $tickets = Ticket::with([
                 'proceso',
                 'importancia',
-                'respuestas.user' // <-- IMPORTANTE
+                'anexos',
+                'respuestas.user' 
             ])
                 ->where('proceso_id', $usuario->proceso_id)
                 ->orderBy('id', 'desc')
                 ->paginate(10)
                 ->withQueryString();
 
+             
             // Para las tarjetas resumen
-            $todosTickets = Ticket::with('respuestas')
+            $todosTickets = Ticket::with('respuestas','anexos','importancia','proceso')
                 ->where('proceso_id', $usuario->proceso_id)
                 ->get();
         } elseif ($usuario->role->nombre_rol === 'Soporte' && !$usuario->proceso_id) {
@@ -39,6 +41,7 @@ class TicketSoporteController extends Controller
             $todosTickets = collect();
         }
 
+    
         return Inertia::render('Soporte/ListadoTicketsSoporte', [
             'tickets' => $tickets,
             'todos_tickets' => $todosTickets,
@@ -63,7 +66,7 @@ class TicketSoporteController extends Controller
 
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
-                $nombre = $archivo->store('anexos', 'public');
+                $nombre = $archivo->store('anexos');
 
                 $respuesta->anexos()->create([
                     'ticket_id'      => $ticket->id,
@@ -103,6 +106,7 @@ class TicketSoporteController extends Controller
             'respuestas.anexos',
             'proceso',
             'importancia',
+            'anexos',
         ]);
 
         return response()->json([

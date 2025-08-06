@@ -3,7 +3,7 @@ import { Head, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TarjetaSemaforo from '@/Components/TarjetaSemaforo';
 import TicketCardSoporte from '@/Components/TicketCardSoporte';
-import ModalDetalleTicket from '@/Components/ModalDetalleTicketSoporte';
+import ModalDetalleTicketSoporte from '@/Components/ModalDetalleTicketSoporte';
 import type { PageProps } from '@/types';
 import type { Ticket } from '@/types/ticket';
 
@@ -103,7 +103,7 @@ export default function ListadoTicketsSoporte() {
 
                 {/* Detalles del ticket seleccionado */}
                 {ticketSeleccionado && (
-                    <ModalDetalleTicket
+                    <ModalDetalleTicketSoporte
                         ticket={ticketSeleccionado}
                         onClose={() => setTicketSeleccionado(null)}
                     />

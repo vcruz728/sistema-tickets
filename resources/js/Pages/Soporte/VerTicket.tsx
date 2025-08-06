@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import ModalDetalleTicket from '@/Components/ModalDetalleTicketSoporte';
+import ModalDetalleTicketSoporte from '@/Components/ModalDetalleTicketSoporte';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import type { PageProps } from '@/types';
@@ -15,7 +15,7 @@ export default function VerTicket() {
 
       {/* Modal centrado */}
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <ModalDetalleTicket
+        <ModalDetalleTicketSoporte
           isOpen={true}
           onClose={() => window.history.back()}
           ticket={ticket}

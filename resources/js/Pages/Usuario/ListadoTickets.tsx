@@ -63,7 +63,7 @@ export default function ListadoTickets() {
                                                 {ticket.anexos.map((anexo, index) => (
                                                     <li key={index}>
                                                         <a
-                                                            href={`/storage/${anexo.ruta_archivo}`}
+                                                            href={`http://localhost:8000/anexos/descargar/${anexo.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="text-blue-600 dark:text-blue-400 underline"

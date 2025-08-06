@@ -28,7 +28,7 @@ const TicketCardSoporte: React.FC<Props> = ({ ticket, onClick }) => {
       </h3>
       <p className="text-sm text-gray-600 dark:text-gray-300">{ticket.descripcion}</p>
       <p className="text-xs mt-2 text-gray-400">
-        Estado: {ticket.estado} | Importancia: {ticket.importancia?.nombre_importancia}
+        Estado: {ticket.estado} | Importancia: {ticket.importancia?.descripcion}
       </p>
     </div>
   );

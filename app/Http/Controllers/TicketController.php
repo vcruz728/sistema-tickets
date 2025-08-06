@@ -100,12 +100,13 @@ class TicketController extends Controller
         // Subir archivos
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
-                $ruta = $archivo->store('anexos', 'public');
+                $ruta = $archivo->store('anexos');
+                $nombreGuardado = basename($ruta);
 
                 Anexo::create([
                     'ticket_id'      => $ticket->id,
                     'nombre_archivo' => $archivo->getClientOriginalName(),
-                    'ruta_archivo'   => $ruta,
+                    'ruta_archivo'   => $nombreGuardado,
                     'mime'           => $archivo->getClientMimeType(),
                     'size'           => $archivo->getSize(),
                 ]);
@@ -131,7 +132,7 @@ class TicketController extends Controller
 
         if ($request->hasFile('archivos')) {
             foreach ($request->file('archivos') as $archivo) {
-                $nombre = $archivo->store('anexos', 'public');
+                $nombre = $archivo->store('anexos');
 
                 $respuesta->anexos()->create([
                     'ticket_id'      => $ticket->id,

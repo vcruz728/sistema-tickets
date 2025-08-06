@@ -33,7 +33,7 @@ class RespuestaUsuarioController extends Controller
             // Adjuntar archivos si existen
             if ($request->hasFile('anexos')) {
                 foreach ($request->file('anexos') as $archivo) {
-                    $path = $archivo->store('anexos', 'public');
+                    $path = $archivo->store('anexos');
                     $respuesta->anexos()->create([
                         'nombre_archivo' => $archivo->getClientOriginalName(),
                         'ruta_archivo' => $path,

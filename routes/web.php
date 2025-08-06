@@ -1,21 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RespuestaController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 use Inertia\Inertia;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\Soporte\TicketSoporteController;
+
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 });
-
 
 
 Route::middleware('auth')->group(function () {
@@ -32,7 +29,14 @@ Route::middleware(['auth', 'rol:Usuario'])->group(function () {
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::post('/tickets/{ticket}/respuestas', [TicketController::class, 'guardarRespuesta'])->name('tickets.respuestas.store');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-   
 });
+
+
+
+Route::middleware(['auth', 'rol:Soporte'])->group(function () {
+    Route::get('/soporte/tickets', [TicketSoporteController::class, 'index'])->name('soporte.tickets.index');
+    // Aquí puedes agregar más rutas de soporte si lo necesitas
+});
+
 
 require __DIR__ . '/auth.php';

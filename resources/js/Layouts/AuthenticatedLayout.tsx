@@ -34,24 +34,38 @@ export default function AuthenticatedLayout({ header, children }) {
             {/* Sidebar */}
             <aside className="hidden sm:block fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-md z-20">
                 <nav className="mt-4 space-y-1 px-4">
-                    <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                        <div className={`${navItemStyle} ${navTextColor}`}>
-                            <Home className="w-4 h-4" />
-                            <span>Inicio</span>
-                        </div>
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
-                        <div className={`${navItemStyle} ${navTextColor}`}>
-                            <Ticket className="w-4 h-4" />
-                            <span>Mis Tickets</span>
-                        </div>
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
-                        <div className={`${navItemStyle} ${navTextColor}`}>
-                            <FilePlus className="w-4 h-4" />
-                            <span>Nuevo Ticket</span>
-                        </div>
-                    </ResponsiveNavLink>
+                    {user.role?.nombre_rol?.toLowerCase() === 'usuario' && (
+                        <>
+                            <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <Home className="w-4 h-4" />
+                                    <span>Inicio</span>
+                                </div>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <Ticket className="w-4 h-4" />
+                                    <span>Mis Tickets</span>
+                                </div>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
+                                <div className={`${navItemStyle} ${navTextColor}`}>
+                                    <FilePlus className="w-4 h-4" />
+                                    <span>Nuevo Ticket</span>
+                                </div>
+                            </ResponsiveNavLink>
+                        </>
+                    )}
+
+                    {user.role?.nombre_rol?.toLowerCase() === 'soporte' && (
+                        <ResponsiveNavLink href={route('soporte.tickets.index')} active={route().current('soporte.tickets.index')}>
+                            <div className={`${navItemStyle} ${navTextColor}`}>
+                                <Ticket className="w-4 h-4" />
+                                <span>Tickets asignados</span>
+                            </div>
+                        </ResponsiveNavLink>
+                    )}
+
 
                     {/* Modo oscuro */}
                     <div className="mt-6 border-t pt-4">
@@ -126,20 +140,30 @@ export default function AuthenticatedLayout({ header, children }) {
                             />
                         </svg>
                     </button>
-
-                    {showingNavigationDropdown && (
+{showingNavigationDropdown && (
     <div className="mt-2 space-y-1">
-        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-            Inicio
-        </ResponsiveNavLink>
-        <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
-            Mis Tickets
-        </ResponsiveNavLink>
-        <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
-            Nuevo Ticket
-        </ResponsiveNavLink>
+        {/* Navegación por rol */}
+        {user.role?.nombre_rol?.toLowerCase() === 'usuario' && (
+            <>
+                <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                    Inicio
+                </ResponsiveNavLink>
+                <ResponsiveNavLink href={route('tickets.index')} active={route().current('tickets.index')}>
+                    Mis Tickets
+                </ResponsiveNavLink>
+                <ResponsiveNavLink href={route('tickets.create')} active={route().current('tickets.create')}>
+                    Nuevo Ticket
+                </ResponsiveNavLink>
+            </>
+        )}
 
-        {/* Botón modo oscuro/claro en móvil */}
+        {user.role?.nombre_rol?.toLowerCase() === 'soporte' && (
+            <ResponsiveNavLink href={route('soporte.tickets.index')} active={route().current('soporte.tickets.index')}>
+                Tickets asignados
+            </ResponsiveNavLink>
+        )}
+
+        {/** Común a todos los roles: modo oscuro, perfil, logout */}
         <button
             onClick={toggleDarkMode}
             className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 rounded-md"

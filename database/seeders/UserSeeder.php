@@ -25,5 +25,41 @@ class UserSeeder extends Seeder
                 'proceso_id' => null,
             ]);
         }
+
+        User::create([
+            'name' => 'Usuario Soporte',
+            'email' => 'soporte1@example.com',
+            'password' => bcrypt('password123'),
+            'role_id' => 3,
+            'area_id' => 5,
+            'proceso_id' => 2,
+        ]);
+
+        User::create([
+            'name' => 'Usuario Soporte Desarrollo Web',
+            'email' => 'soporte2@example.com',
+            'password' => bcrypt('password123'),
+            'role_id' => 3,
+            'area_id' => 5,
+            'proceso_id' => 1,
+        ]);
+
+        User::create([
+            'name' => 'Usuario Soporte Redes',
+            'email' => 'soporte3@example.com',
+            'password' => bcrypt('password123'),
+            'role_id' => 3,
+            'area_id' => 5,
+            'proceso_id' => 3,
+        ]);
+
+        User::create([
+            'name' => 'Usuario Director',
+            'email' => 'soporte4@example.com',
+            'password' => bcrypt('password123'),
+            'role_id' => 1,
+            'area_id' => 6,
+            'proceso_id' => null,
+        ]);
     }
 }

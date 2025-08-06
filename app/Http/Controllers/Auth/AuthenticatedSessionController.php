@@ -27,6 +27,37 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
+
+    public function store(Request $request)
+    {
+        // Validación básica
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        // Intento de login
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+
+        $request->session()->regenerate();
+
+        // Redirección basada en el rol
+       $user = Auth::user()->load(['area', 'proceso', 'role']);
+
+        switch ($user->role->nombre_rol) {
+            case 'Soporte':
+                return redirect('/soporte/tickets');
+            case 'Usuario':
+                return redirect('/tickets/dashboard');
+            default:
+                return redirect('/');
+        }
+    }
+    /*
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -35,7 +66,7 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
-
+*/
     /**
      * Destroy an authenticated session.
      */
@@ -47,6 +78,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

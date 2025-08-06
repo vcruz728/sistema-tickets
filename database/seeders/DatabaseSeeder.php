@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             ImportanciaSeeder::class,
             ProcesoSeeder::class,
-            UserSeeder::class
+            UserSeeder::class,
+            TicketSeeder::class,
         ]);
 
     }

@@ -10,6 +10,8 @@ use App\Models\Ticket;
 use App\Models\Anexo;
 use App\Models\Importancia;
 use App\Models\Proceso;
+use App\Mail\TicketMailable;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -129,6 +131,9 @@ public function dashboard(Request $request)
             }
         }
 
+        Mail::to($ticket->user->email)->send(
+        new TicketMailable($ticket, $ticket->user->name, 'creado')
+        );
         return redirect()->route('tickets.create')->with('success', 'Ticket creado correctamente.');
     }
 

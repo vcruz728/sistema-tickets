@@ -14,6 +14,8 @@ use App\Models\Anexo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\AnexoController;
+use App\Mail\TicketMailable;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -72,5 +74,13 @@ Route::middleware(['auth', 'rol:Director'])->group(function () {
     Route::get('/director/promedio-respuesta', [DirectorController::class, 'reportePromedioSistemas'])->name('director.promedio');
     Route::get('/director/reporte-promedio-sistemas/pdf', [DirectorController::class, 'descargarPromedioPDF'])->name('director.reporte.promedio.pdf');
 });
+
+    //Correo
+    Route::get('correo',function () {
+        Mail::to('vcruz728@hotmail.com')
+        ->send(new TicketMailable);
+        return 'Correo enviado correctamente';
+    })->name('correo');
+
 
 require __DIR__ . '/auth.php';

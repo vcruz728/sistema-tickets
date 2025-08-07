@@ -1,57 +1,78 @@
 import React from 'react';
 import type { Ticket } from '@/types/ticket';
-import { Dialog } from '@headlessui/react';
-import { X } from 'lucide-react';
 
 interface Props {
   ticket: Ticket;
   onClose: () => void;
 }
 
-export default function ModalDetalleTicketUsuario({ ticket, onClose }: Props) {
+const ModalDetalleTicketUsuario: React.FC<Props> = ({ ticket, onClose }) => {
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-2xl w-full p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:hover:text-white"
+          className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-red-600 text-xl"
         >
-          <X className="w-5 h-5" />
+          &times;
         </button>
 
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Detalles del Ticket #{ticket.id}
-        </h2>
+        <h2 className="text-xl font-bold mb-4">Ticket #{ticket.id}</h2>
 
-        <div className="space-y-3 text-gray-800 dark:text-gray-200">
+        <div className="space-y-2 text-sm">
           <p><strong>Estado:</strong> {ticket.estado}</p>
-          <p><strong>Descripción:</strong> {ticket.descripcion}</p>
-          <p><strong>Proceso:</strong> {ticket.proceso?.nombre_proceso}</p>
-          <p><strong>Importancia:</strong> {ticket.importancia?.descripcion}</p>
+          <p><strong>Importancia:</strong> {ticket.importancia ? ticket.importancia.descripcion : 'Sin importancia'}</p>
+          <p><strong>Proceso:</strong> {ticket.proceso ? ticket.proceso.nombre_proceso : 'Sin proceso'}</p>
 
-          <div>
-            <strong>Anexos:</strong>
-            {ticket.anexos.length > 0 ? (
-              <ul className="list-disc list-inside mt-1">
-                {ticket.anexos.map((anexo, index) => (
-                  <li key={index}>
+          <p><strong>Fecha apertura:</strong> {ticket.fecha_apertura}</p>
+          {ticket.fecha_cierre && (
+            <p><strong>Fecha cierre:</strong> {ticket.fecha_cierre}</p>
+          )}
+          <p><strong>Descripción:</strong></p>
+          <p className="bg-gray-100 dark:bg-gray-700 p-3 rounded">{ticket.descripcion}</p>
+
+          {ticket.anexos && ticket.anexos.length > 0 && (
+            <div className="mt-4">
+              <h3 className="font-semibold mb-2">Archivos adjuntos</h3>
+              <ul className="space-y-1 text-sm list-disc list-inside">
+                {ticket.anexos.map((anexo: any) => (
+                  <li key={anexo.id}>
                     <a
                       href={`http://localhost:8000/anexos/descargar/${anexo.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 underline"
+                      className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800"
                     >
                       {anexo.nombre_archivo}
                     </a>
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="italic text-gray-500 dark:text-gray-400">Sin archivos adjuntos</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
+
+        {ticket.respuestas && ticket.respuestas.length > 0 && (
+          <div className="mt-6">
+            <h3 className="font-semibold mb-2">Historial de soporte</h3>
+            <ul className="space-y-2 text-sm">
+              {ticket.respuestas.map((respuesta: any) => (
+                <li
+                  key={respuesta.id}
+                  className="p-3 rounded bg-gray-100 dark:bg-gray-700"
+                >
+                  <div className="text-xs text-gray-500 mb-1">
+                    {respuesta.user?.name ?? 'Soporte'} — {new Date(respuesta.created_at).toLocaleString()}
+                  </div>
+                  <div>{respuesta.descripcion}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default ModalDetalleTicketUsuario;

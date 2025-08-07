@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { PageProps } from '@/types';
 import type { Ticket } from '@/types/ticket';
 import Pagination from '@/Components/Pagination';
+import ModalDetalleTicketUsuario from '@/Components/ModalDetalleTicketUsuario';
 
 interface Props {
   tickets: {
@@ -12,14 +13,21 @@ interface Props {
     links: any;
   };
   todos_tickets: Ticket[];
-  filtro_actual: 'todos' | 'abierto' | 'cerrado';
+  filtro_actual: 'todos' | 'abierto' | 'resuelto';
 }
 
 export default function DashboardUsuario({ tickets, todos_tickets, filtro_actual }: Props) {
   const [filtro, setFiltro] = useState<'todos' | 'abierto' | 'resuelto'>(filtro_actual);
   const { user } = usePage<PageProps>().props;
 
-  // Contadores constantes
+  const [ticketSeleccionado, setTicketSeleccionado] = useState<Ticket | null>(null);
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+  const abrirModal = (ticket: Ticket) => {
+    setTicketSeleccionado(ticket);
+    setModalAbierto(true);
+  };
+
   const total = todos_tickets.length;
   const pendientes = todos_tickets.filter(ticket => ticket.estado === 'Abierto').length;
   const resueltos = todos_tickets.filter(ticket => ticket.estado !== 'Abierto').length;
@@ -76,22 +84,37 @@ export default function DashboardUsuario({ tickets, todos_tickets, filtro_actual
             <p className="text-gray-600 dark:text-gray-400">No hay tickets registrados.</p>
           ) : (
             tickets.data.map(ticket => (
-              <a key={ticket.id} href={route('tickets.show', ticket.id)} className="block">
-                <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg shadow p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200 cursor-pointer">
-                  <h4 className="font-bold">#{ticket.id} - {ticket.titulo ?? 'Ticket'}</h4>
-                  <p>Estado: <span className="font-semibold">{ticket.estado}</span></p>
-                </div>
-              </a>
+              <div
+                key={ticket.id}
+                onClick={() => abrirModal(ticket)}
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              >
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Ticket #{ticket.id} — {ticket.proceso?.nombre_proceso ?? 'Sin proceso'}
+                </h4>
+                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+                  {ticket.descripcion}
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Estado: <span className="text-blue-600 dark:text-blue-400">{ticket.estado}</span> |{' '}
+                  Importancia: <span className="text-red-600 dark:text-red-400">{ticket.importancia?.descripcion}</span>
+                </p>
+              </div>
             ))
           )}
         </div>
 
+        {modalAbierto && ticketSeleccionado && (
+          <ModalDetalleTicketUsuario
+            ticket={ticketSeleccionado}
+            onClose={() => setModalAbierto(false)}
+          />
+        )}
+
+        {tickets?.links && (
+          <Pagination links={tickets.links} />
+        )}
       </div>
-
-{tickets?.links && (
-  <Pagination links={tickets.links} />
-)}
-
     </AuthenticatedLayout>
   );
 }
